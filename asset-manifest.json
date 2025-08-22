@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/algo-visualizer/static/css/main.32c32eab.css",
+    "main.js": "/algo-visualizer/static/js/main.5290d2a9.js",
+    "static/js/453.976af006.chunk.js": "/algo-visualizer/static/js/453.976af006.chunk.js",
+    "static/media/MonoLisa-Regular.otf": "/algo-visualizer/static/media/MonoLisa-Regular.4ec1cbcb13c98e690a55.otf",
+    "index.html": "/algo-visualizer/index.html",
+    "main.32c32eab.css.map": "/algo-visualizer/static/css/main.32c32eab.css.map",
+    "main.5290d2a9.js.map": "/algo-visualizer/static/js/main.5290d2a9.js.map",
+    "453.976af006.chunk.js.map": "/algo-visualizer/static/js/453.976af006.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.32c32eab.css",
+    "static/js/main.5290d2a9.js"
+  ]
+}
