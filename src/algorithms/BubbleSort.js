@@ -11,6 +11,8 @@ const bubbleSort = (array, position, arraySteps, colorSteps) => {
       arraySteps.push(array.slice());
       colorKey[j] = 1;
       colorKey[j + 1] = 1;
+
+      
       colorSteps.push(colorKey.slice());
       colorKey[j] = 0;
       colorKey[j + 1] = 0;
