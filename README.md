@@ -118,4 +118,4 @@ visualgo.net
 
 Clement Mihailescu's Pathfinding Visualizer
 
-YouTube & GitHub algorithm tutorials that inspired components of this tool
+YouTube & GitHub algorithm tutorials that inspired components of this tool.
