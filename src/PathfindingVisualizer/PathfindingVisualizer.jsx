@@ -19,8 +19,8 @@ export default class PathfindingVisualizer extends Component {
   }
 
   componentDidMount() {
-    const grid = getInitialGrid();
-    this.setState({grid});
+    const gridSet = getInitialGrid();
+    this.setState({gridSet});
   }
 
   handleMouseDown(row, col) {
