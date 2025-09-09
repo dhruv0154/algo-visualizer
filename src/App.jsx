@@ -112,7 +112,7 @@ function HomePage({ setRoute }) {
               <Badge>Neon UI</Badge>
             </div>
           </div>
-          {/* 3D sphere */}
+  
           <div className="relative h-64 sm:h-80 lg:h-[40rem] ">
             <HeroSphere3D />
           </div>
