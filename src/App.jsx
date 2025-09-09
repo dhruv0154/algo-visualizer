@@ -1,7 +1,3 @@
-// App.jsx — Single-file Interactive Algorithm Visualizer (React + Tailwind + react-three-fiber)
-// Enhanced: techy neon UI, contained Three.js effects per section, movable start/end, live speed,
-// sound cues with mute, extra sorting/searching algos, and polished visuals.
-
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
@@ -23,13 +19,12 @@ export default function App() {
   );
 }
 
-/* --------------------------- Shared UI Components -------------------------- */
 const BrandLogo = () => (
   <div className="flex items-center gap-2 font-semibold">
     <svg className="w-6 h-6 text-cyan-400 animate-pulse" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M12 2 3 7v10l9 5 9-5V7l-9-5z" />
     </svg>
-    <span className="tracking-wide">AlgoVisualizer</span>
+    <span className="tracking-wide">AlgoViz</span>
   </div>
 );
 
@@ -55,9 +50,9 @@ function Navbar({ route, setRoute, muted, setMuted }) {
           <BrandLogo />
         </button>
         <nav className="flex items-center gap-2">
-          <Link to="sorting">Sorting</Link>
-          <Link to="searching">Searching</Link>
-          <Link to="pathfinding">Pathfinding</Link>
+          <Link to="sorting"> Sorting </Link>
+          <Link to="searching"> Searching </Link>
+          <Link to="pathfinding"> Pathfinding </Link>
           <button
             onClick={() => setMuted((m) => !m)}
             className={"ml-2 px-3 py-2 rounded-xl text-sm font-medium transition " + (muted ? "bg-white/5" : "bg-cyan-600 text-white hover:bg-cyan-500")}
@@ -117,7 +112,7 @@ function HomePage({ setRoute }) {
               <Badge>Neon UI</Badge>
             </div>
           </div>
-          {/* 3D sphere */}
+  
           <div className="relative h-64 sm:h-80 lg:h-[40rem] ">
             <HeroSphere3D />
           </div>
