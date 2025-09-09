@@ -90,8 +90,6 @@ function Footer({ setRoute }) {
   );
 }
 
-/* --------------------------------- Pages ---------------------------------- */
-// ===================== HOME (Replaced with rich multi-section) =====================
 function HomePage({ setRoute }) {
   return (
     <section className="relative space-y-16">
