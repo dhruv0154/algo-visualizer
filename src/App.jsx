@@ -157,7 +157,7 @@ function HomePage({ setRoute }) {
 
       {/* SHOWCASE */}
       <div className="grid md:grid-cols-2 gap-4">
-        <ShowcaseCard title="Sorting in Action" subtitle="Bubble → Quick with neon pivots" onClick={() => setRoute("sorting")} />
+        <ShowcaseCard title="Sorting in Action" subtitle="Bubble, Insertion Quick" onClick={() => setRoute("sorting")} />
         <ShowcaseCard title="Pathfinding Demo" subtitle="BFS with draggable start/end and walls" onClick={() => setRoute("pathfinding")} />
       </div>
 
@@ -253,7 +253,7 @@ function SortingPage({ muted }) {
 
   return (
     <section className="space-y-6">
-      <Header title={algorithm} subtitle="Choose an algorithm and watch neon bars dance through the data. Now with sound cues and completion glow." />
+      <Header title={algorithm} subtitle="Choose an algorithm and bars dance through the data." />
 
       <Controls>
         <Button onClick={regenerate} disabled={running}>Generate New Array</Button>
@@ -328,7 +328,10 @@ function SearchingPage({ muted }) {
 
   function regenerate() {
     if (running) return;
-    setArray(generateSortedArray(responsiveCellCount()));
+    if(algorithm == "Linear Search")
+      setArray(generateArray(responsiveCellCount()));
+    else
+      setArray(generateSortedArray(responsiveCellCount()));
     setHighlight([]);
     setMessage("Ready.");
   }
