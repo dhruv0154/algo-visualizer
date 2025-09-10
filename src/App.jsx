@@ -332,7 +332,6 @@ function SearchingPage({ muted }) {
   }
 
   function responsiveCellCount() {
-    if (typeof window === "undefined") return 48;
     const width = window.innerWidth;
     if (width < 420) return 24;
     if (width < 640) return 36;
@@ -371,8 +370,8 @@ function SearchingPage({ muted }) {
   }
 
   return (
-    <section className="space-y-6">
-      <Header title={algorithm} subtitle="Switch between Linear and Binary. Binary auto-sorts the array first." />
+    <section className="space-y-5">
+      <Header title={algorithm} subtitle="Switch between Linear and Binary. Binary sorts the array first." />
       <Controls>
         <Button onClick={regenerate} disabled={running}>Generate New Array</Button>
         <select
@@ -381,7 +380,7 @@ function SearchingPage({ muted }) {
           onChange={(e) => setAlgorithm(e.target.value)}
           disabled={running}
         >
-          {algorithms.map((alg) => <option key={alg}>{alg}</option>)}
+          {algorithms.map((alg) => <option key={alg} className="bg-gray-800">{alg}</option>)}
         </select>
         <input
           type="number"
