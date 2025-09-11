@@ -20,6 +20,7 @@ export default function App() {
           <Route path="/sorting" element={<SortingPage muted={muted} />} />
           <Route path="/searching" element={<SearchingPage muted={muted} />} />
           <Route path="/pathfinding" element={<PathfindingPage muted={muted} />} />
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
