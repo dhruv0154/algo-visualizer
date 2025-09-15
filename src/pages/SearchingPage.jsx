@@ -2,16 +2,21 @@ import React, { useEffect, useRef, useState } from "react";
 import { Header } from "../components/Header";
 import Controls from "../components/Controls";
 import Button from "../components/Button";
-import { linearSearch, binarySearch, generateSortedArray, generateArray } from "../utils/algorithms";
+import {
+  linearSearch,
+  binarySearch,
+  generateSortedArray,
+  generateArray,
+} from "../utils/algorithms";
 import { useBeep, successChord } from "../utils/soundUtils";
 
 function responsiveCellCount() {
   if (typeof window === "undefined") return 48;
   const width = window.innerWidth;
   if (width < 420) return 24;
-  if (width < 640) return 36;
-  if (width < 1024) return 48;
-  return 72;
+  if (width < 640) return 48;
+  if (width < 1024) return 68;
+  return 96;
 }
 
 export default function SearchingPage({ muted }) {
@@ -20,25 +25,57 @@ export default function SearchingPage({ muted }) {
   const [array, setArray] = useState(() => generateSortedArray(48));
   const [target, setTarget] = useState(42);
   const [running, setRunning] = useState(false);
-  const [highlight, setHighlight] = useState([]);
+  const [highlight, setHighlight] = useState([]); // indexes highlighted in grid
+  const [currentLine, setCurrentLine] = useState(null); // line index in pseudocode
   const [message, setMessage] = useState("Ready.");
   const [speed, setSpeed] = useState(40);
   const speedRef = useRef(speed);
-  useEffect(() => { speedRef.current = speed; }, [speed]);
+  useEffect(() => {
+    speedRef.current = speed;
+  }, [speed]);
   const beep = useBeep(muted);
+
+  // pseudocode lines for each algorithm
+  const pseudocode = {
+    "Linear Search": [
+      "for i = 0 to n-1",
+      "  check array[i]",
+      "  if array[i] == target then return i",
+      "end for",
+      "return -1",
+    ],
+    "Binary Search": [
+      "low = 0, high = n - 1",
+      "while low <= high",
+      "  mid = floor((low + high) / 2)",
+      "  check array[mid]",
+      "  if array[mid] == target then return mid",
+      "  else if array[mid] < target then low = mid + 1",
+      "  else high = mid - 1",
+      "end while",
+      "return -1",
+    ],
+  };
 
   function regenerate() {
     if (running) return;
-    if (algorithm === "Linear Search") setArray(generateArray(responsiveCellCount()));
+    if (algorithm === "Linear Search")
+      setArray(generateArray(responsiveCellCount()));
     else setArray(generateSortedArray(responsiveCellCount()));
-    setHighlight([]); setMessage("Ready.");
+    setHighlight([]);
+    setCurrentLine(null);
+    setMessage("Ready.");
   }
 
-  const tick = () => new Promise((r) => setTimeout(r, Math.max(1, speedRef.current)));
+  const tick = () =>
+    new Promise((r) => setTimeout(r, Math.max(1, speedRef.current)));
 
   async function startSearch() {
     if (running) return;
-    setRunning(true); setHighlight([]); setMessage("Searching...");
+    setRunning(true);
+    setHighlight([]);
+    setCurrentLine(null);
+    setMessage("Searching...");
 
     const sounds = {
       onProbe: () => beep(980, 0.02, "sine", 0.02),
@@ -48,43 +85,133 @@ export default function SearchingPage({ muted }) {
 
     let idx = -1;
     if (algorithm === "Linear Search") {
-      idx = await linearSearch(array, Number(target), setHighlight, tick, sounds);
+      idx = await linearSearch(
+        array,
+        Number(target),
+        setHighlight,
+        tick,
+        sounds,
+        setCurrentLine
+      );
     } else {
       const sorted = [...array].sort((a, b) => a - b);
       setArray(sorted);
       await tick();
-      idx = await binarySearch(sorted, Number(target), setHighlight, tick, sounds);
+      idx = await binarySearch(
+        sorted,
+        Number(target),
+        setHighlight,
+        tick,
+        sounds,
+        setCurrentLine
+      );
     }
 
-    setMessage(idx >= 0 ? `Target ${target} found at index ${idx}.` : "Target not found.");
-    if (idx >= 0) sounds.onFound?.(); else sounds.onFail?.();
+    setMessage(
+      idx >= 0 ? `Target ${target} found at index ${idx}.` : "Target not found."
+    );
+    if (idx >= 0) sounds.onFound?.();
+    else sounds.onFail?.();
     setRunning(false);
   }
 
   return (
     <section className="space-y-6">
-      <Header title={algorithm} subtitle="Switch between Linear and Binary. Binary auto-sorts the array first." />
+      <Header
+        title={algorithm}
+        subtitle="Switch between Linear and Binary. Binary auto-sorts the array first."
+      />
       <Controls>
-        <Button onClick={regenerate} disabled={running}>Generate New Array</Button>
-        <select className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm" value={algorithm} onChange={(e)=>setAlgorithm(e.target.value)} disabled={running}>
-          {algorithms.map((alg)=>(<option className=" bg-gray-800 "key={alg}>{alg}</option>))}
+        <Button onClick={regenerate} disabled={running}>
+          Generate New Array
+        </Button>
+        <select
+          className="px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-sm"
+          value={algorithm}
+          onChange={(e) => setAlgorithm(e.target.value)}
+          disabled={running}
+        >
+          {algorithms.map((alg) => (
+            <option className=" bg-gray-800 " key={alg}>
+              {alg}
+            </option>
+          ))}
         </select>
-        <input type="number" value={target} onChange={(e)=>setTarget(Number(e.target.value))} disabled={running} className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10" />
-        <Button onClick={startSearch} disabled={running} intent="primary">Start</Button>
+        <input
+          type="number"
+          value={target}
+          onChange={(e) => setTarget(Number(e.target.value))}
+          disabled={running}
+          className="w-24 px-3 py-2 rounded-xl bg-white/5 border border-white/10"
+        />
+        <Button onClick={startSearch} disabled={running} intent="primary">
+          Start
+        </Button>
         <div className="flex items-center gap-3">
           <label className="text-sm text-gray-400">Speed</label>
-          <input type="range" min={1} max={200} step={1} value={speed} onChange={(e)=>setSpeed(Number(e.target.value))} className="w-40 accent-cyan-500" />
+          <input
+            type="range"
+            min={1}
+            max={500}
+            step={1}
+            value={speed}
+            onChange={(e) => setSpeed(Number(e.target.value))}
+            className="w-40 accent-cyan-500"
+          />
           <span className="text-xs text-gray-500 w-12">{speed}ms</span>
         </div>
         <div className="text-sm text-gray-400">{message}</div>
       </Controls>
 
-      <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 lg:grid-cols-16 gap-2 p-3 bg-white/5 border border-white/10 rounded-2xl">
-        {array.map((num, idx) => (
-          <div key={idx} className={`aspect-square flex items-center justify-center rounded-xl text-sm font-medium transition ${highlight.includes(idx) ? "bg-yellow-400 animate-pulse text-gray-900" : "bg-gray-800 text-gray-300"}`}>
-            {num}
+      {/* Layout: pseudocode panel above grid on small screens, side-by-side on larger */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        {/* PSEUDOCODE PANEL */}
+        <div className=" p-3 bg-white/5 border border-white/10 rounded-2xl">
+          <div className="text-sm text-gray-300 font-medium mb-2">Pseudocode</div>
+          <pre className="text-xs font-mono leading-6">
+            {pseudocode[algorithm].map((line, i) => (
+              <div
+                key={i}
+                className={`px-2 py-1 rounded ${currentLine === i ? "bg-cyan-500/30 text-cyan-300" : "text-gray-400"}`}
+              >
+                {i + 1}. {line}
+              </div>
+            ))}
+          </pre>
+        </div>
+
+        {/* GRID */}
+        <div className="col-span-2 p-3 bg-white/5 border border-white/10 rounded-2xl">
+          <div className="grid grid-cols-6 sm:grid-cols-8 md:grid-cols-12 lg:grid-cols-16 gap-2">
+            {array.map((num, idx) => (
+              <div
+                key={idx}
+                className={`aspect-square flex items-center justify-center rounded-xl transition
+          ${highlight.includes(idx)
+                    ? "bg-yellow-400 animate-pulse text-gray-900"
+                    : "bg-gray-800 text-gray-300"}`}
+              >
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  value={String(num)}
+                  disabled={running}
+                  onChange={(e) => {
+                    let value = Number(e.target.value);
+                    if (isNaN(value)) value = 0;
+                    if (value > 200) value = 200;
+                    if (value < -200) value = -200;
+                    const newArray = [...array];
+                    newArray[idx] = value;
+                    setArray(newArray);
+                  }}
+                  className="w-10/12 h-10 text-center rounded-lg text-sm font-medium leading-none px-0 py-0 focus:outline-none appearance-none"
+                />
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
     </section>
   );

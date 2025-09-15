@@ -62,16 +62,58 @@ async function partition(arr, setArray, setHi, tick, setPivotIdx, sounds, lo, hi
   [arr[i], arr[hi]] = [arr[hi], arr[i]]; setArray([...arr]); sounds.onSwap?.(); await tick(); setPivotIdx(-1); return i;
 }
 
-/* Searching algorithms */
-export async function linearSearch(arr, target, setHi, tick, sounds={}) {
-  for (let i = 0; i < arr.length; i++) { setHi([i]); sounds.onProbe?.(); await tick(); if (arr[i] === target) return i; }
+export async function linearSearch(arr, target, setHi, tick, sounds = {}, setCurrentLine) {
+  for (let i = 0; i < arr.length; i++) {
+    setCurrentLine?.(0); // for i = 0 to n-1
+    setHi([i]);
+    sounds.onProbe?.();
+    await tick();
+
+    setCurrentLine?.(1); // probe array[i]
+    await tick();
+
+    if (arr[i] === target) {
+      setCurrentLine?.(2); // if array[i] == target then return i
+      await tick();
+      return i;
+    }
+  }
+  setCurrentLine?.(4); // return -1
   return -1;
 }
-export async function binarySearch(arr, target, setHi, tick, sounds={}) {
+
+export async function binarySearch(arr, target, setHi, tick, sounds = {}, setCurrentLine) {
   let lo = 0, hi = arr.length - 1;
+
+  setCurrentLine?.(0); // low = 0, high = n - 1
+  await tick();
+
   while (lo <= hi) {
-    const mid = Math.floor((lo + hi) / 2); setHi([mid]); sounds.onProbe?.(); await tick();
-    if (arr[mid] === target) return mid; if (arr[mid] < target) lo = mid + 1; else hi = mid - 1;
+    setCurrentLine?.(1); // while low <= high
+    const mid = Math.floor((lo + hi) / 2);
+
+    setCurrentLine?.(2); // mid = floor((low + high) / 2)
+    setHi([mid]);
+    sounds.onProbe?.();
+    await tick();
+
+    setCurrentLine?.(3); // probe array[mid]
+    await tick();
+
+    if (arr[mid] === target) {
+      setCurrentLine?.(4); // if array[mid] == target then return mid
+      await tick();
+      return mid;
+    } else if (arr[mid] < target) {
+      setCurrentLine?.(5); // array[mid] < target then low = mid + 1
+      lo = mid + 1;
+      await tick();
+    } else {
+      setCurrentLine?.(6); // else high = mid - 1
+      hi = mid - 1;
+      await tick();
+    }
   }
+  setCurrentLine?.(8); // return -1
   return -1;
 }
