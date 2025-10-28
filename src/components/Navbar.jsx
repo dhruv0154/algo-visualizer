@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import BrandLogo from "./BrandLogo"; // I'll include brand below
+import BrandLogo from "./BrandLogo";
 
 function LinkBtn({ to, children }) {
   return (
