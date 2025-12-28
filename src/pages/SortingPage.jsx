@@ -196,6 +196,14 @@ export default function SortingPage({ muted }) {
 
   async function startSort() {
     if (running) return;
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+        fetch('http://localhost:5000/log-activity', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, type: 'Sorting', name: algorithm })
+        }).catch(e => console.error(e));
+    }
     setRunning(true);
     setHighlight([]); 
     setPivotIdx(-1);

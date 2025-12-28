@@ -228,6 +228,14 @@ export default function PathfindingPage({ muted }) {
 
   async function visualize() {
     if (running) return;
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+        fetch('http://localhost:5000/log-activity', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: user.id, type: 'Pathfinding', name: algorithm })
+        }).catch(e => console.error(e));
+    }
     setRunning(true);
     clearPath();
     setCurrentLine(null);
